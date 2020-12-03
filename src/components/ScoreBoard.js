@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import apiUrl from "../utils/api";
+
+const URL = apiUrl(false);
 
 const MainContainer = styled.div`
   display: flex;
@@ -8,10 +11,38 @@ const MainContainer = styled.div`
   border-radius: 2rem 2rem 0 0;
   min-height: 50vh;
   padding-bottom: 1rem;
+  animation: slideup 0.5s;
+  width: 100%;
+
+  @keyframes slideup {
+    from {
+      transform: translateY(100vh);
+    }
+    to {
+      transform: translateY(0rem);
+    }
+  }
+`;
+
+const StyledTR = styled.tr`
+  animation: slideup 0.5s;
+  animation-delay: ${(props) => props.index * 0.1}s;
+
+  @keyframes slideup {
+    from {
+      opacity: 0;
+      transform: translateY(100vh);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0rem);
+    }
+  }
 `;
 
 const StyledRow = styled.td`
   padding: 1rem;
+  font-weight: bold;
 `;
 
 const topScoreColor = {
@@ -40,7 +71,7 @@ const ScoreBoard = ({ rerender }) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3007/scores", requestOptions)
+    fetch(`${URL}/scores`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         setScores(result);
@@ -49,26 +80,26 @@ const ScoreBoard = ({ rerender }) => {
   }, [rerender]);
   return (
     <MainContainer>
-      <h1>Leaderboard</h1>
+      <h2>⚡ Top 10 MadLads ⚡</h2>
 
       {scores.length ? (
         <table>
           <tbody>
             {scores.map((score, idx) => {
               return (
-                <tr key={score.id}>
+                <StyledTR key={score.id} index={idx}>
                   <StyledRow>
                     <StyledIndex index={idx}>{idx + 1}</StyledIndex>
                   </StyledRow>
                   <StyledRow>{score.username}</StyledRow>
                   <StyledRow>{score.distance}</StyledRow>
-                </tr>
+                </StyledTR>
               );
             })}
           </tbody>
         </table>
       ) : (
-        <span>Nothing yet!</span>
+        <span>Be the first!</span>
       )}
     </MainContainer>
   );

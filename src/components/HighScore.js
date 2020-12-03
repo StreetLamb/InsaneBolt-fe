@@ -4,7 +4,19 @@ import { useState } from "react";
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 3rem;
+  margin-top: 2rem;
+  animation: slidedown-fadein 1s;
+
+  @keyframes slidedown-fadein {
+    from {
+      transform: translateY(-3rem);
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 `;
 
 const StyledInput = styled.input`
@@ -20,7 +32,7 @@ const Button = styled.span`
 `;
 
 const HighScore = ({ submitName }) => {
-  const [name, setName] = useState(null);
+  const [name, setName] = useState("");
   const [showError, setShowError] = useState(false);
 
   const handleChange = (event) => {
@@ -28,8 +40,8 @@ const HighScore = ({ submitName }) => {
   };
 
   const submitHandler = () => {
-    if (name.length) {
-      submitName(name);
+    if (name.trim() !== "") {
+      submitName(name.trim());
     } else {
       setShowError(true);
     }
@@ -38,7 +50,7 @@ const HighScore = ({ submitName }) => {
   return (
     <MainContainer>
       <span style={{ fontWeight: "bold", fontSize: "1rem" }}>
-        Wohoo! You earn a place on the scoreboard!
+        Wohoo! You earn a place on the leaderboard!
       </span>
       <div style={{ marginBottom: ".5rem" }}>
         <StyledInput
@@ -52,7 +64,7 @@ const HighScore = ({ submitName }) => {
         <Button onClick={() => submitHandler(name)}>&rarr;</Button>
       </div>
       {showError ? (
-        <span style={{ color: "red" }}>Input must be filled!</span>
+        <span style={{ color: "red" }}>Must have a nickname!</span>
       ) : null}
     </MainContainer>
   );

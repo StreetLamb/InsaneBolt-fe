@@ -12,8 +12,10 @@ function App() {
       style={{
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#FDCD2A",
+        margin: "auto",
+        backgroundImage: "linear-gradient(#FDCD2A,#ff6a00)",
         minHeight: "100vh",
+        maxWidth: "768px",
       }}
     >
       <UserScore rerender={() => setRerender(rerender + 1)} />

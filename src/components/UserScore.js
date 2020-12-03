@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { useState } from "react";
 import HighScore from "./HighScore";
+import apiUrl from "../utils/api";
+import ScoreCommenter from "./ScoreCommenter";
+
+const URL = apiUrl(false);
 
 const MainContainer = styled.div`
   display: flex;
@@ -30,6 +34,39 @@ const ScoreContainer = styled.div`
 const Score = styled.span`
   font-size: 3.5rem;
   font-weight: bold;
+  color: #5f2d25;
+`;
+
+const LoadingText = styled(Score)`
+  font-size: 2rem;
+  animation: float 1s infinite;
+
+  @keyframes float {
+    0% {
+      transform: translateY(1rem);
+    }
+    50% {
+      transform: translateY(-1rem);
+    }
+
+    100% {
+      transform: translateY(1rem);
+    }
+  }
+`;
+
+const ScoreTextContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  animation: fadein 1s;
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const LocationButton = styled.div`
@@ -47,7 +84,7 @@ const LocationButton = styled.div`
 
 const ButtonText = styled.span`
   color: #faa510;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
 `;
 
@@ -83,11 +120,12 @@ const UserScore = ({ rerender }) => {
         body: JSON.stringify({
           lat: latitude,
           lng: longitude,
+          period: 1440,
         }),
         redirect: "follow",
       };
 
-      fetch("http://localhost:3007/judgescore", requestOptions)
+      fetch(`${URL}/judgescore`, requestOptions)
         .then((response) => response.json())
         .then((result) => {
           const { distance, scorePosition } = result;
@@ -117,7 +155,7 @@ const UserScore = ({ rerender }) => {
       redirect: "follow",
     };
 
-    fetch("http://localhost:3007/scores", requestOptions)
+    fetch(`${URL}/scores`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         setshowHighscore(false); //remove high score
@@ -128,25 +166,34 @@ const UserScore = ({ rerender }) => {
   return (
     <MainContainer>
       <TitleContainer>
-        <h2>Compete who is closest to being zapped!</h2>
+        <h3>
+          The game:
+          <br />
+          Get as close to a lightning strike as possible!
+        </h3>
       </TitleContainer>
       <ScoreContainer>
         {isloading ? (
-          <Score>Loading...</Score>
+          <LoadingText>Loading...</LoadingText>
         ) : !myDistance ? (
           <LocationButton onClick={checkLocation}>
-            <ButtonText>How close was I?</ButtonText>
+            <ButtonText>How close am I to getting struck?</ButtonText>
           </LocationButton>
         ) : myDistance > -1 ? (
-          <>
+          <ScoreTextContainer>
             <span>You were</span>
             <Score>{`${myDistance} m`}</Score>
-            <span>away from the nearest lightning strike!</span>
-          </>
+            <span>away from getting struck!</span>
+            <br />
+            <ScoreCommenter distance={myDistance} />
+          </ScoreTextContainer>
         ) : (
-          <span>No lightning activity currently</span>
+          <span>
+            We can't detect any lightning strikes currently!
+            <br /> Try again later :)
+          </span>
         )}
-        {showHighscore && myPosition < 10 ? (
+        {showHighscore && myPosition <= 10 ? (
           <HighScore submitName={(name) => submitScore(name, myDistance)} />
         ) : null}
       </ScoreContainer>
