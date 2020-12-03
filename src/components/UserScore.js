@@ -4,7 +4,7 @@ import HighScore from "./HighScore";
 import apiUrl from "../utils/api";
 import ScoreCommenter from "./ScoreCommenter";
 
-const URL = apiUrl(true);
+const URL = apiUrl(false);
 
 const MainContainer = styled.div`
   display: flex;
