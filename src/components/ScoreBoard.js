@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import apiUrl from "../utils/api";
 
-const URL = apiUrl(false);
+const URL = apiUrl(true);
 
 const MainContainer = styled.div`
   display: flex;

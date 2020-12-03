@@ -4,14 +4,14 @@ import HighScore from "./HighScore";
 import apiUrl from "../utils/api";
 import ScoreCommenter from "./ScoreCommenter";
 
-const URL = apiUrl(false);
+const URL = apiUrl(true);
 
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 50vh;
+  min-height: 50vh;
   padding: 1rem;
 `;
 
@@ -154,6 +154,7 @@ const UserScore = ({ rerender }) => {
       }),
       redirect: "follow",
     };
+    console.log(requestOptions);
 
     fetch(`${URL}/scores`, requestOptions)
       .then((response) => response.json())
